@@ -11,6 +11,7 @@ spring:
     username: root
     password: 123456
 
+
 mybatis:
-  mapper-locations: classpath:pub/ants/springcloud/mapper/*.xml
   type-aliases-package: pub.ants.springcloud.entities
+  mapper-locations: classpath:pub.ants.springcloud.mapper/*.xml

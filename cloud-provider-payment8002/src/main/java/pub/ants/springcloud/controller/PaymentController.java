@@ -3,10 +3,14 @@ package pub.ants.springcloud.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
 import pub.ants.springcloud.entities.CommonResult;
 import pub.ants.springcloud.entities.Payment;
 import pub.ants.springcloud.service.PaymentService;
+
+import java.util.List;
 
 /**
  * @author magw
@@ -24,6 +28,9 @@ public class PaymentController {
 
     @Value("${server.port}")
     private String serverPort;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
 
     @PostMapping(value = "/create")
     public CommonResult<Integer> create(@RequestBody Payment payment){
@@ -48,4 +55,23 @@ public class PaymentController {
         }
     }
 
+    /**
+     * 获取注册信息
+     * @return
+     */
+    @GetMapping(value = "/discovery")
+    public Object discovery(){
+        List<String> services = discoveryClient.getServices();
+        services.stream().forEach((name)->{
+            log.info("****element"+name);
+        });
+
+        services.stream().forEach((name)->{
+            List<ServiceInstance> instances = discoveryClient.getInstances(name);
+            instances.stream().forEach((instance)->{
+                log.info(instance.getServiceId()+"\t"+instance.getHost()+"\t"+instance.getPort());
+            });
+        });
+        return discoveryClient;
+    }
 }

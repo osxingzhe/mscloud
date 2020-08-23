@@ -11,6 +11,7 @@ import pub.ants.springcloud.entities.Payment;
 import pub.ants.springcloud.service.PaymentService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author magw
@@ -77,6 +78,16 @@ public class PaymentController {
 
     @GetMapping(value="/lb")
     public String getPaymentLB(){
+        return serverPort;
+    }
+
+    @GetMapping(value = "/feign/timeout")
+    public String paymentFeignTimeout(){
+        try{
+            TimeUnit.SECONDS.sleep(3);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return serverPort;
     }
 }
